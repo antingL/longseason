@@ -2,16 +2,192 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>图片罗列示例</title>
-   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>漫长的季节 - 角色介绍</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            background: #1a1a1a;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        
+        .container {
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .character-card {
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .character-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        .character-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
+            z-index: 1;
+        }
+        
+        .character-name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e8c547;
+            margin: 0 0 0.5rem 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        .character-desc {
+            font-size: 1rem;
+            color: #ccc;
+            line-height: 1.6;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+        }
+        
+        /* 滚动提示动画 */
+        .scroll-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            animation: bounce 2s infinite;
+            opacity: 0.6;
+        }
+        
+        .scroll-hint::before {
+            content: '↑';
+            display: block;
+            color: white;
+            font-size: 2rem;
+            text-align: center;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+        
+        /* 桌面端样式 */
+        @media (min-width: 769px) {
+            .container {
+                overflow-y: auto;
+                scroll-snap-type: none;
+                padding: 2rem;
+            }
+            
+            .character-card {
+                height: auto;
+                scroll-snap-align: none;
+                max-width: 800px;
+                margin: 0 auto 3rem;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            }
+            
+            .character-img {
+                position: relative;
+                height: 60vh;
+            }
+            
+            .character-info {
+                position: relative;
+                background: #2a2a2a;
+                padding: 1.5rem;
+            }
+            
+            .scroll-hint {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-<div style="display: flex; flex-direction: column; gap: 1rem;">
-  <img src="shenmo.jpg" style="width: 100%; height: auto; display: block;">
-  <img src="yinghong.jpg" style="width: 100%; height: auto; display: block;">
-  <img src="fuweijun.jpg" style="width: 100%; height: auto; display: block;">
+<div class="container">
+    <div class="character-card">
+        <img src="shenmo.jpg" class="character-img" alt="沈墨">
+        <div class="character-info">
+            <h2 class="character-name">沈墨</h2>
+            <p class="character-desc"></p>
+        </div>
+        <div class="scroll-hint"></div>
+    </div>
+
+    <div class="character-card">
+        <img src="yinghong.jpg" class="character-img" alt="殷红">
+        <div class="character-info">
+            <h2 class="character-name">殷红</h2>
+            <p class="character-desc"></p>
+        </div>
+        <div class="scroll-hint"></div>
+    </div>
+
+    <div class="character-card">
+        <img src="fuweijun.jpg" class="character-img" alt="傅卫军">
+        <div class="character-info">
+            <h2 class="character-name">傅卫军</h2>
+            <p class="character-desc"></p>
+        </div>
+    </div>
 </div>
 
-
+<script>
+    // 隐藏非最后一个卡片的滚动提示
+    const cards = document.querySelectorAll('.character-card');
+    const container = document.querySelector('.container');
+    
+    container.addEventListener('scroll', function() {
+        const scrollTop = container.scrollTop;
+        const windowHeight = window.innerHeight;
+        
+        cards.forEach((card, index) => {
+            const hint = card.querySelector('.scroll-hint');
+            if (!hint) return;
+            
+            const cardTop = index * windowHeight;
+            const distance = Math.abs(scrollTop - cardTop);
+            
+            if (distance < windowHeight * 0.5 && index < cards.length - 1) {
+                hint.style.opacity = '0.6';
+            } else {
+                hint.style.opacity = '0';
+            }
+        });
+    });
+</script>
 </body>
 </html>
